@@ -47,6 +47,43 @@ func TestConvert(t *testing.T) {
 	}
 }
 
+func TestConvertToString(t *testing.T) {
+	invalidUnitErr := errors.New("Invalid unit")
+	testcases := []struct {
+		input          Byte
+		unit           Unit
+		expectedOutput string
+		expectedErr    error
+	}{
+		{Byte(0), B, "0B", nil},
+		{Byte(KB), KB, "1.0KB", nil},
+		{Byte(MB), MB, "1.0MB", nil},
+		{Byte(GB), GB, "1.0GB", nil},
+		{Byte(TB), TB, "1.0TB", nil},
+		{Byte(PB), PB, "1.0PB", nil},
+		{Byte(EB), EB, "1.0EB", nil},
+		{Byte(2048), KB, "2.0KB", nil},
+		{Byte(1048576), KB, "1024.0KB", nil},
+		{Byte(1048576), MB, "1.0MB", nil},
+		{Byte(1581252608), MB, "1508.0MB", nil},
+		{Byte(4608), KB, "4.5KB", nil},
+		{Byte(21440476741632), TB, "19.5TB", nil},
+		{Byte(1024), Unit(100), "", invalidUnitErr},
+	}
+	for _, tc := range testcases {
+		output, err := Byte(tc.input).ConvertToString(tc.unit)
+		if err != nil {
+			if err.Error() != tc.expectedErr.Error() {
+				t.Errorf("CovertToString(%f) throw unexpected error %s", float64(tc.input), err.Error())
+			}
+		} else {
+			if output != tc.expectedOutput {
+				t.Errorf("CovertToString(%f) => %s, expected %s", float64(tc.input), output, tc.expectedOutput)
+			}
+		}
+	}
+}
+
 func floatEqual(lhs float64, rhs float64) bool {
 	if math.Abs(lhs-rhs) < eps {
 		return true
