@@ -1,11 +1,13 @@
 package filesize
 
-// Byte is defined as uint64, which is equal 8 bit
-type Byte uint64
+import "errors"
+
+// Unit is defined storage unit
+type Unit uint64
 
 const (
 	// B is Byte
-	B Byte = 1
+	B Unit = 1
 	// KB is Kilobyte
 	KB = B << 10
 	// MB is Megabyte
@@ -18,11 +20,23 @@ const (
 	PB = TB << 10
 	// EB is Extrabyte
 	EB = PB << 10
-
-	maxUint64 uint64 = (1 << 64) - 1
 )
 
-// Convert converts byte to other unit
-func (b Byte) Convert(unit Byte) float64 {
-	return float64(b) / float64(unit)
+func (u Unit) isValid() bool {
+	switch u {
+	case B, KB, MB, GB, TB, PB, EB:
+		return true
+	}
+	return false
+}
+
+// Byte is defined as uint64, which is equal 8 bit
+type Byte uint64
+
+// Convert converts byte to other unit, it will return err if input unit is invalid
+func (b Byte) Convert(unit Unit) (float64, error) {
+	if !unit.isValid() {
+		return 0, errors.New("Invalid unit")
+	}
+	return float64(b) / float64(unit), nil
 }
