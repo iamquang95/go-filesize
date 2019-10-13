@@ -1,6 +1,9 @@
 package filesize
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // Unit is defined storage unit
 type Unit uint64
@@ -30,6 +33,26 @@ func (u Unit) isValid() bool {
 	return false
 }
 
+func (u Unit) toString() string {
+	switch u {
+	case B:
+		return "B"
+	case KB:
+		return "KB"
+	case MB:
+		return "MB"
+	case GB:
+		return "GB"
+	case TB:
+		return "TB"
+	case PB:
+		return "PB"
+	case EB:
+		return "EB"
+	}
+	return ""
+}
+
 // Byte is defined as uint64, which is equal 8 bit
 type Byte uint64
 
@@ -39,4 +62,14 @@ func (b Byte) Convert(unit Unit) (float64, error) {
 		return 0, errors.New("Invalid unit")
 	}
 	return float64(b) / float64(unit), nil
+}
+
+// ConvertToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
+// Result will be corrected to 1 decimal number
+func (b Byte) ConvertToString(unit Unit) (string, error) {
+	if !unit.isValid() {
+		return "", errors.New("Invalid unit")
+	}
+	res := float64(b) / float64(unit)
+	return fmt.Sprintf("%.1f%s", res, unit.toString()), nil
 }
