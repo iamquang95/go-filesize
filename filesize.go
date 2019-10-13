@@ -71,5 +71,9 @@ func (b Byte) ConvertToString(unit Unit) (string, error) {
 		return "", errors.New("Invalid unit")
 	}
 	res := float64(b) / float64(unit)
+	// Special case for Byte, don't show decimal number
+	if unit == B {
+		return fmt.Sprintf("%d%s", uint64(res), unit.toString()), nil
+	}
 	return fmt.Sprintf("%.1f%s", res, unit.toString()), nil
 }

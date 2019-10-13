@@ -55,7 +55,7 @@ func TestConvertToString(t *testing.T) {
 		expectedOutput string
 		expectedErr    error
 	}{
-		{Byte(0), B, "0.0B", nil},
+		{Byte(0), B, "0B", nil},
 		{Byte(KB), KB, "1.0KB", nil},
 		{Byte(MB), MB, "1.0MB", nil},
 		{Byte(GB), GB, "1.0GB", nil},
