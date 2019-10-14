@@ -65,13 +65,13 @@ func (b Byte) Convert(unit Unit) (float64, error) {
 	return float64(b) / float64(unit), nil
 }
 
-// ConvertToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
+// ToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
 // Result will be corrected to 1 decimal number
-func (b Byte) ConvertToString(unit Unit) (string, error) {
-	if !unit.isValid() {
-		return "", errors.New("Invalid unit")
+func (b Byte) ToString(unit Unit) (string, error) {
+	res, err := b.Convert(unit)
+	if err != nil {
+		return "", err
 	}
-	res := float64(b) / float64(unit)
 	// Special case for Byte, don't show decimal number
 	if unit == B {
 		return fmt.Sprintf("%d%s", uint64(res), unit.toString()), nil

@@ -47,7 +47,7 @@ func TestConvert(t *testing.T) {
 	}
 }
 
-func TestConvertToString(t *testing.T) {
+func TestToString(t *testing.T) {
 	invalidUnitErr := errors.New("Invalid unit")
 	testcases := []struct {
 		input          Byte
@@ -71,7 +71,7 @@ func TestConvertToString(t *testing.T) {
 		{Byte(1024), Unit(100), "", invalidUnitErr},
 	}
 	for _, tc := range testcases {
-		output, err := Byte(tc.input).ConvertToString(tc.unit)
+		output, err := Byte(tc.input).ToString(tc.unit)
 		if err != nil {
 			if err.Error() != tc.expectedErr.Error() {
 				t.Errorf("CovertToString(%f) throw unexpected error %s", float64(tc.input), err.Error())
