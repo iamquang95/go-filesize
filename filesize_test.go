@@ -84,6 +84,39 @@ func TestConvertToString(t *testing.T) {
 	}
 }
 
+func TestToString(t *testing.T) {
+	testcases := []struct {
+		input          Byte
+		expectedOutput string
+		expectedErr    error
+	}{
+		{Byte(0), "0B", nil},
+		{Byte(KB), "1.0KB", nil},
+		{Byte(MB), "1.0MB", nil},
+		{Byte(GB), "1.0GB", nil},
+		{Byte(TB), "1.0TB", nil},
+		{Byte(PB), "1.0PB", nil},
+		{Byte(EB), "1.0EB", nil},
+		{Byte(2048), "2.0KB", nil},
+		{Byte(1048576), "1.0MB", nil},
+		{Byte(1581252608), "1.5GB", nil},
+		{Byte(4608), "4.5KB", nil},
+		{Byte(21440476741632), "19.5TB", nil},
+	}
+	for _, tc := range testcases {
+		output, err := Byte(tc.input).ToString()
+		if err != nil {
+			if err.Error() != tc.expectedErr.Error() {
+				t.Errorf("ToString(%f) throw unexpected error %s", float64(tc.input), err.Error())
+			}
+		} else {
+			if output != tc.expectedOutput {
+				t.Errorf("ToString(%f) => %s, expected %s", float64(tc.input), output, tc.expectedOutput)
+			}
+		}
+	}
+}
+
 func floatEqual(lhs float64, rhs float64) bool {
 	if math.Abs(lhs-rhs) < eps {
 		return true

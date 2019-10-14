@@ -34,23 +34,24 @@ func (u Unit) isValid() bool {
 }
 
 func (u Unit) toString() string {
+	var unitStr string
 	switch u {
 	case B:
-		return "B"
+		unitStr = "B"
 	case KB:
-		return "KB"
+		unitStr = "KB"
 	case MB:
-		return "MB"
+		unitStr = "MB"
 	case GB:
-		return "GB"
+		unitStr = "GB"
 	case TB:
-		return "TB"
+		unitStr = "TB"
 	case PB:
-		return "PB"
+		unitStr = "PB"
 	case EB:
-		return "EB"
+		unitStr = "EB"
 	}
-	return ""
+	return unitStr
 }
 
 // Byte is defined as uint64, which is equal 8 bit
@@ -67,13 +68,36 @@ func (b Byte) Convert(unit Unit) (float64, error) {
 // ConvertToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
 // Result will be corrected to 1 decimal number
 func (b Byte) ConvertToString(unit Unit) (string, error) {
-	if !unit.isValid() {
-		return "", errors.New("Invalid unit")
+	res, err := b.Convert(unit)
+	if err != nil {
+		return "", err
 	}
-	res := float64(b) / float64(unit)
 	// Special case for Byte, don't show decimal number
 	if unit == B {
 		return fmt.Sprintf("%d%s", uint64(res), unit.toString()), nil
 	}
 	return fmt.Sprintf("%.1f%s", res, unit.toString()), nil
+}
+
+// ToString converts byte to a string which is human-readable
+func (b Byte) ToString() (string, error) {
+	var unit Unit
+	switch {
+	case b >= Byte(EB):
+		unit = EB
+	case b >= Byte(PB):
+		unit = PB
+	case b >= Byte(TB):
+		unit = TB
+	case b >= Byte(GB):
+		unit = GB
+	case b >= Byte(MB):
+		unit = MB
+	case b >= Byte(KB):
+		unit = KB
+	default:
+		unit = B
+	}
+	res, err := b.ConvertToString(unit)
+	return res, err
 }
