@@ -65,9 +65,9 @@ func (b Byte) Convert(unit Unit) (float64, error) {
 	return float64(b) / float64(unit), nil
 }
 
-// ToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
+// ConvertToString converts byte to other unit then convert this to string, it will return err if input unit is invalid
 // Result will be corrected to 1 decimal number
-func (b Byte) ToString(unit Unit) (string, error) {
+func (b Byte) ConvertToString(unit Unit) (string, error) {
 	res, err := b.Convert(unit)
 	if err != nil {
 		return "", err
@@ -77,4 +77,27 @@ func (b Byte) ToString(unit Unit) (string, error) {
 		return fmt.Sprintf("%d%s", uint64(res), unit.toString()), nil
 	}
 	return fmt.Sprintf("%.1f%s", res, unit.toString()), nil
+}
+
+// ToString converts byte to a string which is human-readable
+func (b Byte) ToString() (string, error) {
+	var unit Unit
+	switch {
+	case b >= Byte(EB):
+		unit = EB
+	case b >= Byte(PB):
+		unit = PB
+	case b >= Byte(TB):
+		unit = TB
+	case b >= Byte(GB):
+		unit = GB
+	case b >= Byte(MB):
+		unit = MB
+	case b >= Byte(KB):
+		unit = KB
+	default:
+		unit = B
+	}
+	res, err := b.ConvertToString(unit)
+	return res, err
 }
