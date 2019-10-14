@@ -34,23 +34,24 @@ func (u Unit) isValid() bool {
 }
 
 func (u Unit) toString() string {
+	var unitStr string
 	switch u {
 	case B:
-		return "B"
+		unitStr = "B"
 	case KB:
-		return "KB"
+		unitStr = "KB"
 	case MB:
-		return "MB"
+		unitStr = "MB"
 	case GB:
-		return "GB"
+		unitStr = "GB"
 	case TB:
-		return "TB"
+		unitStr = "TB"
 	case PB:
-		return "PB"
+		unitStr = "PB"
 	case EB:
-		return "EB"
+		unitStr = "EB"
 	}
-	return ""
+	return unitStr
 }
 
 // Byte is defined as uint64, which is equal 8 bit
